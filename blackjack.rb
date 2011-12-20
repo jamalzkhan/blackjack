@@ -18,10 +18,6 @@ class Player
     puts "Hand: #{@cards} Value: #{value()}"
   end
   
-  def print_player
-    puts "Player "
-  end
-  
   # Gets the value of the hand for the player
   def value()
     sum = 0
@@ -64,11 +60,21 @@ class Blackjack
     @dealer = Player.new(0, Array.new, true, -1)
     
     init_game()
-    game_loop()
+    game()
 
   end
   
-  def game_loop()
+  def game()
+    
+    while (true)
+      init_round()
+      round()
+    end
+    
+  end
+    
+  
+  def round()
     
     @players.each do |k, p|
       puts "## PLAYER #{k} ##"
@@ -162,7 +168,6 @@ class Blackjack
     deck_size = @num_decks * 4
     deck_size.times {@cards += SUITE}
     
-        
   end
   
   # Gets a random card from the deck
