@@ -14,13 +14,15 @@ class Player
   end
     
   def print_hand()
-    puts "Hand: #{@cards} Value: #{value()}"
+    print "Hand :"
+    @cards.each {|c| print "#{c} "}
+    puts "Value: #{value()}"
   end
   
-  # Gets the value of the hand for the player
+  # Gets the value of the hand for the player according to the player cards
   def value()
     sum = 0
-    # Partition the array by String and integer then reverse to put aces at back
+    # Partition the array by string and integer then reverse to put aces at back
     @cards.partition{|x| x.is_a? String}.map(&:sort).flatten.reverse_each do |i|
       if ["Q", "J", "K"].include?(i)
         sum += 10
@@ -119,16 +121,8 @@ class Blackjack
         
         if p.blackjack()
           puts "Blackjack was acheived!"
-          p.print_hand
-          break
-        elsif p.value == 21
-          puts "21 was acheived!"
-          p.print_hand
-          break
-        elsif p.value() > 21
-          puts "You got bust!"
-          puts p.print_hand
-          break
+          p.print_hand()
+          p.is_playing = false
         end
         
         p.print_hand() 
@@ -142,17 +136,30 @@ class Blackjack
         elsif decision == "split"
           puts "Not implemented split functionality, sorry :("
         elsif decision == "double"
-          if p.bet * 2 <= p.amount
+          if p.bet * 2 <= p.amount and p.cards.length == 2
             p.bet *= 2
             p.cards.push(get_card)
             p.is_playing = false
-            p.print_hand
+            p.print_hand()
             puts "Double was called"
           else
-            puts "Double not allowed as not enough money in account"
+            puts "Double not allowed as not enough money in account or not first round"
           end
           
+          
         end
+        
+        if p.value() == 21
+          puts "21 was acheived!"
+          p.print_hand()
+          p.is_playing = false
+        elsif p.value() > 21
+          puts "You got bust!"
+          p.print_hand()
+          p.is_playing = false
+        end
+        
+        
       end
     end
     
