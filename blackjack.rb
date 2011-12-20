@@ -1,5 +1,3 @@
-SUITE = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
-
 class Player
   attr_accessor :cards, :amount , :is_playing, :bet
   
@@ -47,6 +45,8 @@ class Player
   
 end
 
+SUITE = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
+
 class Blackjack 
   
   def initialize()
@@ -86,13 +86,13 @@ class Blackjack
     @players.delete_if{|k, p| p.amount <= 0}
     
     if @players.size == 0
-      puts "Game Ended"
+      puts "Game Over"
       exit()
     end
    
-    puts "============================="
-    puts "|         NEW ROUND          |"
-    puts "============================="
+    puts "+===========================+"
+    puts "|         NEW ROUND         |"
+    puts "+===========================+"
     
     # give each player 2 initial cards and get their bets
     @players.each do |k, p| 
@@ -100,7 +100,7 @@ class Blackjack
       p.cards = [get_card, get_card]
       
       while (p.bet <=0 or p.bet > p.amount)
-        puts "Player #{k}, please enter your bet, a number less than or equal to #{p.amount}"
+        print "Player #{k}, please enter your bet, a number less than or equal to #{p.amount}: "
         p.bet = gets.to_i
       end
       
@@ -114,7 +114,7 @@ class Blackjack
   def round()
     
     @players.each do |k, p|
-      puts "## PLAYER #{k} ##"
+      puts "###### PLAYER #{k} ######"
       while p.is_playing
         
         if p.blackjack()
@@ -126,13 +126,13 @@ class Blackjack
           p.print_hand
           break
         elsif p.value() > 21
-          puts p.print_hand
           puts "You got bust!"
+          puts p.print_hand
           break
         end
         
         p.print_hand() 
-        puts "Please choose from the following {hit, stay, split, double}:"
+        print "Please choose from the following {hit, stay, split, double}: "
         decision = gets.chomp
         
         if decision == "hit"
@@ -140,12 +140,18 @@ class Blackjack
         elsif decision ==  "stay"
           p.is_playing = false
         elsif decision == "split"
-          puts "Not implemented split functionality"
+          puts "Not implemented split functionality, sorry :("
         elsif decision == "double"
-          p.cards.push(get_card)
-          p.is_playing = false
-          p.print_hand
-          puts "double was called"
+          if p.bet * 2 <= p.amount
+            p.bet *= 2
+            p.cards.push(get_card)
+            p.is_playing = false
+            p.print_hand
+            puts "Double was called"
+          else
+            puts "Double not allowed as not enough money in account"
+          end
+          
         end
       end
     end
@@ -155,15 +161,15 @@ class Blackjack
   
   def print_game()
     
-    puts "============================="
-    puts "|         GAME STATE         |"
-    puts "============================="
+    puts "+===========================+"
+    puts "|         GAME STATE        |"
+    puts "+===========================+"
     puts "|        DEALER CARD  |#{@dealer.cards[0]}|    |"
-    puts "============================="
+    puts "+===========================+"
         
     @players.each do |k, p|
-       puts "|        PLAYER: #{k}   #{p.cards[0]}, #{p.cards[1]}    |"
-       puts "============================="
+       puts "|        PLAYER: #{k}   #{p.cards[0]}, #{p.cards[1]}   |"
+       puts "+===========================+"
     end
     
   end
@@ -172,7 +178,7 @@ class Blackjack
     
     puts "We reached the end of the round"
     
-    # Reveal dealers last card
+    # Dealer sorts out their cards
     while @dealer.value() < 17
       @dealer.cards.push(get_card)
     end
@@ -181,8 +187,9 @@ class Blackjack
     
     dealer_value = @dealer.value()
     
+    # Calculating the gains and losses
+    
     if dealer_value > 21
-      #blackjack case
       puts "The dealer lost."
       @players.each do |k, p|
         if p.blackjack()
@@ -202,7 +209,7 @@ class Blackjack
           p.amount += p.bet
           puts "Player #{k} won and has #{p.amount} left in their account"
         elsif p.value() == dealer_value
-          puts "Player #{k} drawn and has #{p.amount} left in their account"
+          puts "Player #{k} drew and has #{p.amount} left in their account"
         else
           p.amount -= p.bet
           puts "Player #{k} lost and has #{p.amount} left in their account"
@@ -215,20 +222,20 @@ class Blackjack
 
   def init_game()
     
-    puts "============================="
-    puts "|         BLACKJACK          |"
-    puts "============================="
+    puts "+===========================+"
+    puts "|         BLACKJACK         |"
+    puts "+===========================+"
     
-    # Waiting to enter the number of players
     puts "Please enter the number of players for the game:"
     n = 0
     
+    # We mush get atleast one player at the table
     while n <= 0
-      puts "Enter a number greater than 0"
+      print "Enter a number greater than 0: "
       n = gets.to_i
     end
     
-    # Initialize the players (there is atleast one player - sorry hardcoded!)
+    # Initializing the players
     for i in 1...n+1
       @players[i] = Player.new(1000, Array.new, i)
     end
@@ -241,4 +248,4 @@ class Blackjack
   
 end 
 
-b = Blackjack.new()
+blackjack = Blackjack.new()
