@@ -187,7 +187,7 @@ class Blackjack
     
     dealer_value = @dealer.value()
     
-    # Calculating the gains and losses
+    # Calculating the gains and losses for each player
     
     if dealer_value > 21
       puts "The dealer lost."
