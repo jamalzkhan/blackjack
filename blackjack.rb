@@ -123,6 +123,7 @@ class Blackjack
           puts "Blackjack was acheived!"
           p.print_hand()
           p.is_playing = false
+          break
         end
         
         p.print_hand() 
